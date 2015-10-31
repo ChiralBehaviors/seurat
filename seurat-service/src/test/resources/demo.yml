@@ -1,0 +1,39 @@
+auth: NULL
+
+jpa:
+    debug: true
+    properties: 
+        javax.persistence.jdbc.user: ${seurat.db.login}
+        javax.persistence.jdbc.password: ${seurat.db.password}
+        javax.persistence.jdbc.url: jdbc:postgresql://${seurat.db.server}:${seurat.db.port}/${seurat.db.database}
+        javax.persistence.jdbc.driver: org.postgresql.Driver 
+        hibernate.cache.use_second_level_cache: true
+        hibernate.c3p0.max_size: 20
+        hibernate.c3p0.min_size: 5
+        hibernate.c3p0.timeout: 5000
+        hibernate.c3p0.max_statements: 100
+        hibernate.c3p0.idle_test_period: 300
+        hibernate.c3p0.acquire_increment: 2
+                
+        
+logging:
+    level: INFO
+    loggers:
+        "org.hibernate": INFO 
+        "org.glassfish": ERROR
+        
+assets:
+  - name: seurat
+    uri: /ui
+    path: /ui
+  - name: explorer
+    uri: /explorer
+    path: /workspace-explorer/dist
+
+server:
+  applicationConnectors:
+  - type: http 
+    port: 9000
+  adminConnectors:
+  - type: http
+    port: 9001

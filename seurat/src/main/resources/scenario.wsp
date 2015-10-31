@@ -1,0 +1,152 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/northwind/scenario" 
+           version: 1
+           "Seurat Demo Scenario" 
+           "Demo scenario ontology for ye olde thyme Northwind demo"
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/northwind" as nw
+}
+
+agencies {
+    BillingComputer = "Billing CPU" "Billing computer";
+    CPU = "CPU" "General purpose computer";
+    CreditDept = "Credit Department" "The credit department";
+    Factory1Agency = "Factory 1" "Factory #1";
+    GeorgetownUniversity = "GU" "Georgetown University";
+    CafleurBon = "carfleurBon" "Carfleur Bon";
+    Manufacturer = "MNFR" "Manufacturer";
+    OrgA = "OrgA" "Organization A";
+    OrderFullfillment = "Order Fullfillment" "Order Fullfillment";
+    Seurat = "Seurat" "Seurat, inc"; 
+    
+    edges {  
+        GeorgetownUniversity.CustomerType.ExternalCust
+        GeorgetownUniversity.SalesTaxStatus.ExemptAgency
+        GeorgetownUniversity.IsA.Customer
+        
+        OrgA.CustomerType.ExternalCust
+        OrgA.IsA.Customer
+        OrgA.SalesTaxStatus.NonExemptAgency
+        
+        CafleurBon.CustomerType.ExternalCust
+        CafleurBon.IsA.Customer
+        CafleurBon.SalesTaxStatus.NonExemptAgency
+        
+        Seurat.IsA.Company
+        BillingComputer.IsA.ComputeResource
+        CPU.IsA.ComputeResource
+        Manufacturer.IsA.Supplier
+        CreditDept.IsA.Department
+        Factory1Agency.IsA.Department
+        OrderFullfillment.IsA.Department
+    }
+} 
+
+locations {  
+    DC = "DC" "District of Columbia";
+    EastCoast = "East Coast" "East Coast";
+    WestCoast = "West Coast" "The Left Coast";
+    France = "France" "The country of France";
+    Paris = "Paris" "The city Paris";
+    US = "United States" "US locations";
+    Euro = "Europe" "EU locations";
+    Rsb225 = "225RSB" "225 Reiss Science Bldg";
+    Bht37 = "37BHT" "37 Bret Harte Terrace";
+    Rc31 = "31rc" "31 Rue Cambon"; 
+    Factory1 = "Factory 1" "Factory #1";
+    Bin1 = "Bin 1";
+    Bin15 = "Bin 15"; 
+
+    edges {
+        US.IsA.Area
+        US.IsA.Country
+        EastCoast.IsA.Region
+        WestCoast.IsA.Region
+        Euro.IsA.Area
+        DC.IsA.City
+        Paris.IsA.City
+        Factory1.IsA.Area
+    
+        Bin1.InArea.Factory1
+        Bin15.InArea.Factory1
+        Rsb225.InCity.DC
+        Bht37.InCity.DC
+        Rc31.InCity.Paris
+        DC.InRegion.EastCoast
+        EastCoast.InArea.US
+        Paris.InRegion.France
+        France.InArea.Euro
+        Factory1.OnStreet.Bht37
+    } 
+}
+
+products {
+    Abc486 = "Abc486" "Laptop computer";
+    ChemB = "ChemB" "Chemical B"; 
+    
+    edges { 
+        Abc486.StorageType.RoomTemp
+        Abc486.SalesTaxStatus.NonExemptProduct
+        Abc486.IsA.PricedProduct
+        
+        ChemB.StorageType.Frozen
+        ChemB.SalesTaxStatus.NonExemptProduct
+        ChemB.IsA.PricedProduct
+        
+    } 
+}   
+protocols {
+        service: Deliver product: AnyProduct from: AnyLocation to: AnyLocation
+        ->
+        service: Pick product: SameProduct assign: Factory1Agency
+        
+        
+        service: Deliver product: AnyProduct from: AnyLocation to: AnyLocation 
+            requester: AnyAgency
+        ->
+        service: Ship product: SameProduct assign: Factory1Agency
+        
+        
+        
+        service: Pick product: AnyProduct from: US to: US
+        ->
+        service: CheckCredit product: SameProduct assign: CPU
+        
+        
+        service: Pick product: AnyProduct from: US to: Euro
+        ->
+        service: CheckLetterOfCredit product: SameProduct assign: CreditDept
+        
+        
+        
+        service: Ship product: AnyProduct from: US to: Euro
+        ->
+        service: PrintCustomsDeclaration product: SameProduct assign: CPU
+        
+        
+        service: Ship product: AnyProduct from: US to: AnyLocation
+        ->
+        service: PrintPurchaseOrder product: SameProduct assign: CPU 
+        
+        
+        
+        service: PrintPurchaseOrder product: AnyProduct from: US to: AnyLocation requester: AnyAgency
+        -> 
+        service: Fee product: SameProduct assign: BillingComputer
+        
+        
+        
+        service: Fee product: NonExemptProduct from: AnyLocation to: DC requester: NonExemptAgency 
+        ->
+        service: SalesTax product: SameProduct assign: BillingComputer
+        
+        
+        service: Fee product: AnyProduct from: US to: Euro requester: ExternalCust
+        ->
+        service: Discount product: SameProduct assign: BillingComputer
+        
+        
+        service: Fee product: AnyProduct from: US to: DC requester: GeorgetownUniversity
+        ->
+        service: SalesTax product: SameProduct assign: BillingComputer
+}
