@@ -32,6 +32,10 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>org.mockito</groupId>
+        	<artifactId>mockito-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -65,6 +69,12 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <generator>
+                                <resource>${basedir}/src/main/resources/northwind.wsp</resource>
+                                <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
+                                <packageName>com.chiralbehaviors.northwind</packageName>
+                                <appendTypeToPackage>true</appendTypeToPackage>
+                            </generator>
                             <generator>
                                 <resource>${basedir}/src/main/resources/seurat.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>

@@ -13,5 +13,9 @@ hs_err_pid*
 /.settings/
 /.project
 /.metadata/
+/.idea/
 
 */.settings/
+/.DS_Store
+**/.DS_Store
+**/.idea/
